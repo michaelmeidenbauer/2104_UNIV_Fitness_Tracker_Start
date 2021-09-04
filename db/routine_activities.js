@@ -17,6 +17,32 @@ async function addActivityToRoutine({
     }
 };
 
+async function getRoutineactivityByRoutineId(routineId) {
+    try {
+        const { rows: [routineactivity] } = await client.query(`
+          SELECT * FROM routineactivities
+          WHERE "routineId"=${routineId};
+        `);
+        return routineactivity;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getRoutineActivitiesByRoutine(routineId) {
+    try {
+        const { rows } = await client.query(`
+          SELECT "activityId" FROM routineactivities
+          WHERE "routineId"=${routineId};
+        `);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     addActivityToRoutine,
+    getRoutineactivityByRoutineId,
+    getRoutineActivitiesByRoutine,
 }

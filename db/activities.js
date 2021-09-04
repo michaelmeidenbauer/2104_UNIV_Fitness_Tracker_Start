@@ -30,5 +30,5 @@ async function getAllActivities() {
 
 module.exports = {
     createActivity,
-    getAllActivities,
+    getAllActivities
 }
