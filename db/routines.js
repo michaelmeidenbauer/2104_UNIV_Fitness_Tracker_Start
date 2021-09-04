@@ -44,12 +44,9 @@ async function getRoutinesWithoutActivities() {
     }
 };
 
-async function getAllRoutines() {
+async function addActivityDataToRoutines(routines) {
+    //REFACTOR THIS LATER WITH BETTER SQL QUERIES
     try {
-        //REFACTOR THIS LATER WITH BETTER SQL QUERIES
-        const { rows: routines } = await client.query(`
-        SELECT * FROM routines;
-        `);
         for (const routine of routines) {
             const { username } = await getUserById(routine.creatorId);
             const routineId = routine.id;
@@ -69,8 +66,33 @@ async function getAllRoutines() {
                 fetchedActivity.count = count;
                 routine.activities.push(fetchedActivity);
             }
+            return routines;
         };
-        return routines;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getAllRoutines() {
+    try {
+        const { rows: routines } = await client.query(`
+        SELECT * FROM routines;
+        `);
+        const routinesWithDataAdded = await addActivityDataToRoutines(routines);
+        return routinesWithDataAdded;
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function getAllPublicRoutines() {
+    try {
+        const { rows: routines } = await client.query(`
+        SELECT * FROM routines
+        WHERE "isPublic"=true;
+        `);
+        const routinesWithDataAdded = await addActivityDataToRoutines(routines);
+        return routinesWithDataAdded;
     } catch (error) {
         throw error;
     }
@@ -93,5 +115,6 @@ module.exports = {
     getRoutinesWithoutActivities,
     getRoutineById,
     getAllRoutines,
-    getActivityById
+    getActivityById,
+    getAllPublicRoutines
 }
