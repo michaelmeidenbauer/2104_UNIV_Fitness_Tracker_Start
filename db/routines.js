@@ -110,11 +110,54 @@ async function getRoutineById(id) {
     }
 };
 
+async function getAllRoutinesByUser({id}) {
+    try {
+        const { rows: routines } = await client.query(`
+        SELECT * FROM routines
+        WHERE "creatorId"=${id};
+        `);
+        const routinesWithDataAdded = await addActivityDataToRoutines(routines);
+        return routinesWithDataAdded;
+    } catch (error) {
+        throw error;
+    }
+};
+async function getPublicRoutinesByUser({id}) {
+    try {
+        const { rows: routines } = await client.query(`
+        SELECT * FROM routines
+        WHERE "creatorId"=${id}
+        AND "isPublic"=true;
+        `);
+        // console.log("fetched routines", routines);
+        const routinesWithDataAdded = await addActivityDataToRoutines(routines);
+        return routinesWithDataAdded;
+    } catch (error) {
+        throw error;
+    }
+};
+async function getPublicRoutinesByActivity({id}) {
+    try {
+        const { rows: routines } = await client.query(`
+        SELECT "routineId" FROM routineactivities
+        WHERE "activityId"=${id};
+        `);
+        console.log("fetched routines", routines);
+        const routinesWithDataAdded = await addActivityDataToRoutines(routines);
+        return routinesWithDataAdded;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
     createRoutine,
     getRoutinesWithoutActivities,
     getRoutineById,
     getAllRoutines,
     getActivityById,
-    getAllPublicRoutines
+    getAllPublicRoutines,
+    getAllRoutinesByUser,
+    getPublicRoutinesByUser,
+    getPublicRoutinesByActivity
 }
