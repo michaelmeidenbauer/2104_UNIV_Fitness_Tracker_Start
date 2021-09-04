@@ -138,11 +138,19 @@ async function getPublicRoutinesByUser({id}) {
 };
 async function getPublicRoutinesByActivity({id}) {
     try {
-        const { rows: routines } = await client.query(`
+        const { rows: routineIds } = await client.query(`
         SELECT "routineId" FROM routineactivities
         WHERE "activityId"=${id};
         `);
-        console.log("fetched routines", routines);
+
+        const routineIdArray = routineIds.map(routine => routine.routineId);
+
+        const { rows: routines } = await client.query(`
+        SELECT * FROM routines
+        WHERE id IN (${routineIdArray})
+        AND "isPublic"=true;
+        `);
+
         const routinesWithDataAdded = await addActivityDataToRoutines(routines);
         return routinesWithDataAdded;
     } catch (error) {
