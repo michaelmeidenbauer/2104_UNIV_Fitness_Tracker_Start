@@ -329,7 +329,7 @@ describe('Database', () => {
         const deletedRoutine = await destroyRoutineActivity(routineActivityToCreateAndUpdate.id);
         expect(deletedRoutine.id).toBe(routineActivityToCreateAndUpdate.id);
         const {rows} = await client.query(`
-          SELECT * FROM routine_activities
+          SELECT * FROM routineactivities
           WHERE id = ${deletedRoutine.id}
         `)
         expect(rows.length).toBe(0);

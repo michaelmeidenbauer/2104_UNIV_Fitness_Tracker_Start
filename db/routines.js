@@ -33,6 +33,57 @@ async function createRoutine({
     }
 };
 
+async function updateRoutine(routineToUpdate) {
+
+    const id = routineToUpdate.id;
+
+    const setString = Object.keys(routineToUpdate).map(
+        (key, index) => `"${key}"=$${index + 1}`,
+    ).join(', ');
+
+    if (setString.length === 0) {
+        return;
+    }
+
+    try {
+        const { rows: [activity] } = await client.query(`
+        UPDATE routines
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;
+      `, Object.values(routineToUpdate));
+        return activity;
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function destroyRoutine(routineId) {
+    try {
+        await client.query(`
+          DELETE FROM routines
+          WHERE id=${routineId};
+        `);
+        const { rows: allRoutineActivities } = await client.query(`
+        SELECT *
+        FROM routineactivities;`);
+        // console.log('all routine activites: ', allRoutineActivities);
+
+        await client.query(`
+          DELETE FROM routineactivities
+          WHERE "routineId"=${routineId};
+        `);
+
+        const { rows: fewerRoutineActivities } = await client.query(`
+        SELECT *
+        FROM routineactivities;`);
+        // console.log('routine activites after deletion: ', fewerRoutineActivities);
+        
+    } catch (error) {
+        throw error;
+    }
+};
+
 async function getRoutinesWithoutActivities() {
     try {
         const { rows } = await client.query(`
@@ -53,7 +104,7 @@ async function addActivityDataToRoutines(routines) {
             routine.creatorName = username;
             routine.activities = [];
 
-            const activityIds = await getRoutineActivitiesByRoutine(routineId);
+            const activityIds = await getRoutineActivitiesByRoutine(routine);
 
             for (const activity of activityIds) {
                 const activityId = activity.activityId;
@@ -167,5 +218,7 @@ module.exports = {
     getAllPublicRoutines,
     getAllRoutinesByUser,
     getPublicRoutinesByUser,
-    getPublicRoutinesByActivity
+    getPublicRoutinesByActivity,
+    updateRoutine,
+    destroyRoutine
 }
