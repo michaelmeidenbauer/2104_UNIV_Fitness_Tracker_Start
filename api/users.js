@@ -1,12 +1,12 @@
 const express = require("express");
 const usersRouter = express.Router();
 
-const { createUser, getUserByUsername } = require("../db");
+const { createUser, getUserByUsername, getPublicRoutinesByUser } = require("../db");
 
 // users
 // POST /users/register
 
-usersRouter.post("/register", async (req, res, next) => {
+usersRouter.post("/users/register", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
@@ -33,7 +33,7 @@ usersRouter.post("/register", async (req, res, next) => {
 
 // POST /users/login
 
-usersRouter.post("/login", async (req, res, next) => {
+usersRouter.post("/users/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -69,14 +69,15 @@ usersRouter.get("/users/me", (req, res) => {
   res.send(
     "Send back the logged-in user's data if a valid token is supplied in the header."
   );
-  // Figure out out to do that.
+  // getUser or getUserByUsername??? 
 });
 
 // GET /users/:username/routines
 
 usersRouter.get("/users/:username/routines", (req, res) => {
-  res.send("Get a list of public routines for a particular user.");
-  // Figure out out to do that.
+ 
+ const routines =  getPublicRoutinesByUser({id});
+  res.send(routines, "Get a list of public routines for a particular user.");
 });
 
 module.exports = usersRouter;
