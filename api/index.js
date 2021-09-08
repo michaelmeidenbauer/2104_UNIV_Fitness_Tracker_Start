@@ -13,7 +13,7 @@ apiRouter.get("/health", (req, res) => {
 const usersRouter = require("./users");
 apiRouter.use("/users", usersRouter);
 
-const activitiesRouter = require("./activities");
+const activitiesRouter = require('./activities');
 apiRouter.use("/activities", activitiesRouter);
 
 const routinesRouter = require("./routines");

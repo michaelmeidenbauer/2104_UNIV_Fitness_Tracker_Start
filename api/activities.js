@@ -1,13 +1,15 @@
 // activities
 const express = require("express");
-const activitesRouter = express.Router();
+const activitiesRouter = express.Router();
 
 const { createActivity, getAllActivities, updateActivity } = require("../db");
 // GET /activities
 
-activitiesRouter.get("/activities", async (req, res) => {
+activitiesRouter.get("/", async (req, res) => {
+  console.log('in all activities route');
   const activities = await getAllActivities();
 // Just return a list of all activities in the database
+  console.log('fetched activities: ', activities);
   res.send(activities);
 });
 
@@ -33,9 +35,9 @@ activitiesRouter.patch("/activities/:activityId", async (req, res) => {
 // GET /activities/:activityId/routines
 
 activitiesRouter.get("/activities/:activityId/routines", async (req, res) => {
-  const publicRoutines = getAllPublicRoutines;
+  // const publicRoutines = getAllPublicRoutines;
   // Get a list of all public routines which feature that activity
   res.send(publicRoutines, "Return all public routines here");
 });
 
-modules.exports = activitesRouter;
+module.exports = activitiesRouter;
