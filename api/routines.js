@@ -5,7 +5,8 @@ const { createRoutine, getRoutinesWithoutActivities, getRoutineById, updateRouti
 
 // routines
 // GET /routines
-routinesRouter.get("/routines", async (req, res) => {
+routinesRouter.get("/", async (req, res) => {
+  const { creatorId, isPublic, name, goal } = req.body;
   // TODO: Make sure the variables for this are coming from somewhere / set in this function
   const routine = await createRoutine(creatorId, isPublic, name, goal);
   // Return a list of public routines, include the activities with them
@@ -13,14 +14,14 @@ routinesRouter.get("/routines", async (req, res) => {
 });
 // POST /routines (*)
 
-routinesRouter.post("/routines", async (req, res) => {
+routinesRouter.post("/", async (req, res) => {
   // Make sure that this is working, remember to execute getRoutinesWithoutActivities by adding ()
-  const routines = await getRoutinesWithoutActivities;
+  const routines = await getRoutinesWithoutActivities();
   // Create a new routine
   res.send(routines, "Return All Routines Here");
 });
 // PATCH /routines/:routineId (**)
-routinesRouter.patch("/routines/:routineId", async (req, res) => {
+routinesRouter.patch("/:routineId", async (req, res) => {
   // req.body => the body of the request passed in
   // req.params => Where your url parameters live
   //     => req.params.routineId => id of the routine you're looking to update
@@ -31,7 +32,7 @@ routinesRouter.patch("/routines/:routineId", async (req, res) => {
 });
 
 // DELETE /routines/:routineId (**)
-routinesRouter.delete("/routines/:routineId", async (req, res) => {
+routinesRouter.delete("/:routineId", async (req, res) => {
   // req.params => Where your url parameters live
   //     => req.params.routineId => id of the routine you're looking to delete
 
@@ -41,7 +42,7 @@ routinesRouter.delete("/routines/:routineId", async (req, res) => {
 });
 
 // POST /routines/:routineId/activities
-routinesRouter.post("/routines/:routineId/activities", async (req, res) => {
+routinesRouter.post("/:routineId/activities", async (req, res) => {
   const routineId = await getRoutineById(id);
 // Attach a single activity to a routine. Prevent duplication on (routineId, activityId) pair.
   res.send(routineId, "Single activity to routine");

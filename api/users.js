@@ -6,7 +6,7 @@ const { createUser, getUserByUsername, getPublicRoutinesByUser } = require("../d
 // users
 // POST /users/register
 
-usersRouter.post("/users/register", async (req, res, next) => {
+usersRouter.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
@@ -33,7 +33,7 @@ usersRouter.post("/users/register", async (req, res, next) => {
 
 // POST /users/login
 
-usersRouter.post("/users/login", async (req, res, next) => {
+usersRouter.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -65,7 +65,7 @@ usersRouter.post("/users/login", async (req, res, next) => {
 
 // GET /users/me (*)
 
-usersRouter.get("/users/me", (req, res) => {
+usersRouter.get("/me", (req, res) => {
   res.send(
     "Send back the logged-in user's data if a valid token is supplied in the header."
   );
@@ -74,9 +74,9 @@ usersRouter.get("/users/me", (req, res) => {
 
 // GET /users/:username/routines
 
-usersRouter.get("/users/:username/routines", (req, res) => {
+usersRouter.get("/:username/routines", (req, res) => {
   // Remember to await your DB requests
-  const routines = getPublicRoutinesByUser({
+  const routines = await getPublicRoutinesByUser({
     id,
   });
   res.send(routines, "Get a list of public routines for a particular user.");
