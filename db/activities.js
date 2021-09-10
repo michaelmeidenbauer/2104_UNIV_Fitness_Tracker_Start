@@ -1,19 +1,8 @@
 const { client } = require('./client');
+const { createQuerySetString } = require('./utils');
 
 async function createActivity({ name, description }) {
   try {
-    //   const response = await client.query(
-    //     `
-    //     INSERT INTO activities(name, description)
-    //     VALUES($1, $2)
-    //     ON CONFLICT (name) DO NOTHING
-    //     RETURNING *;
-    //   `,
-    //     [name, description]
-    //   );
-
-    //   const activity = response.rows[0];
-
     const {
       rows: [activity],
     } = await client.query(
@@ -23,7 +12,7 @@ async function createActivity({ name, description }) {
           ON CONFLICT (name) DO NOTHING 
           RETURNING *;
         `,
-      [name, description]
+      [name, description],
     );
     return activity;
   } catch (error) {
@@ -43,14 +32,8 @@ async function getAllActivities() {
 }
 
 async function updateActivity(activityToUpdate) {
-  const id = activityToUpdate.id;
-
-  /**
-   * This takes in the object and formats it for SQL use
-   */
-  const setString = Object.keys(activityToUpdate)
-    .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(", ");
+  const { id } = activityToUpdate;
+  const setString = createQuerySetString(activityToUpdate);
 
   if (setString.length === 0) {
     return;
@@ -66,16 +49,16 @@ async function updateActivity(activityToUpdate) {
         WHERE id=${id}
         RETURNING *;
       `,
-      Object.values(activityToUpdate)
+      Object.values(activityToUpdate),
     );
     return activity;
   } catch (error) {
     throw error;
   }
-};
+}
 
 module.exports = {
-    createActivity,
-    getAllActivities,
-    updateActivity
-}
+  createActivity,
+  getAllActivities,
+  updateActivity,
+};
