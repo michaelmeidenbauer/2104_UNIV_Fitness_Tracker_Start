@@ -59,69 +59,77 @@ async function updateRoutine(routineToUpdate) {
 };
 
 async function destroyRoutine(routineId) {
-    try {
-        await client.query(`
+  try {
+    await client.query(`
           DELETE FROM routines
           WHERE id=${routineId};
         `);
-        const { rows: allRoutineActivities } = await client.query(`
-        SELECT *
-        FROM routineactivities;`);
-        // console.log('all routine activites: ', allRoutineActivities);
 
-        await client.query(`
+    // const { rows: allRoutineActivities } = await client.query(`
+    // SELECT *
+    // FROM routineactivities;`);
+    // // console.log('all routine activites: ', allRoutineActivities);
+
+    await client.query(`
           DELETE FROM routineactivities
           WHERE "routineId"=${routineId};
         `);
 
-        const { rows: fewerRoutineActivities } = await client.query(`
-        SELECT *
-        FROM routineactivities;`);
-        // console.log('routine activites after deletion: ', fewerRoutineActivities);
-        
-    } catch (error) {
-        throw error;
-    }
-};
+    // const { rows: fewerRoutineActivities } = await client.query(`
+    // SELECT *
+    // FROM routineactivities;`);
+    // // console.log('routine activites after deletion: ', fewerRoutineActivities);
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function getRoutinesWithoutActivities() {
-    try {
-        const { rows } = await client.query(`
+  try {
+    const { rows } = await client.query(`
           SELECT * FROM routines;
         `);
-        return rows;
-    } catch (error) {
-        throw error;
-    }
-};
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function addActivityDataToRoutines(routines) {
-    //REFACTOR THIS LATER WITH BETTER SQL QUERIES
-    try {
-        for (const routine of routines) {
-            const { username } = await getUserById(routine.creatorId);
-            const routineId = routine.id;
-            routine.creatorName = username;
-            routine.activities = [];
+  //REFACTOR THIS LATER WITH BETTER SQL QUERIES
+  try {
+    // Routine => RoutineActivity => Activity + User(routine[userId]);
 
-            const activityIds = await getRoutineActivitiesByRoutine(routine);
+    for (const routine of routines) {
+      const { username } = await getUserById(routine.creatorId);
+      const routineId = routine.id;
+      routine.creatorName = username;
+      routine.activities = [];
 
-            for (const activity of activityIds) {
-                const activityId = activity.activityId;
-                const fetchedActivity = await getActivityById(activityId);
-                const { rows: [ { duration, count }] } = await client.query(`
+      const activityIds = await getRoutineActivitiesByRoutine(routine);
+
+      for (const activity of activityIds) {
+        const activityId = activity.activityId;
+
+        const fetchedActivity = await getActivityById(activityId);
+
+        const {
+          rows: [{ duration, count }],
+        } = await client.query(`
                     SELECT duration, count from routineactivities
                     WHERE "routineId"=${routineId} and "activityId"=${activityId};
                 `);
-                fetchedActivity.duration = duration;
-                fetchedActivity.count = count;
-                routine.activities.push(fetchedActivity);
-            }
-            return routines;
-        };
-    } catch (error) {
-        throw error;
+
+        fetchedActivity.duration = duration;
+        fetchedActivity.count = count;
+
+        routine.activities.push(fetchedActivity);
+      }
+      return routines;
     }
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getAllRoutines() {
