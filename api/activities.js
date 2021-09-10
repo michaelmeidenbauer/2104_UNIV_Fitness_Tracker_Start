@@ -1,3 +1,6 @@
+// "use strict";
+// Uncomment the above code for blow-up mode
+
 // activities
 const express = require("express");
 const activitiesRouter = express.Router();
@@ -6,27 +9,29 @@ const { createActivity, getAllActivities, updateActivity } = require("../db");
 // GET /activities
 
 activitiesRouter.get("/", async (req, res) => {
-  console.log('in all activities route');
+  console.log("in all activities route");
   const activities = await getAllActivities();
-// Just return a list of all activities in the database
-  console.log('fetched activities: ', activities);
+  // Just return a list of all activities in the database
+  console.log("fetched activities: ", activities);
   res.send(activities);
 });
 
 // POST /activities (*)
 
 activitiesRouter.post("/activities", async (req, res) => {
+  // TODO: Make sure you're defining variables before they're used
   const activities = await createActivity({
     name,
-    description
-});
-// Create a new activity
+    description,
+  });
+  // Create a new activity
   res.send(activities, "Return All Activites Here");
 });
 
 // PATCH /activities/:activityId (*)
 
 activitiesRouter.patch("/activities/:activityId", async (req, res) => {
+  // Await and execute this
   const activities = updateActivity;
   // Anyone can update an activity
   res.send(activities, "Update Activity (Anyone)");

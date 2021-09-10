@@ -75,8 +75,10 @@ usersRouter.get("/users/me", (req, res) => {
 // GET /users/:username/routines
 
 usersRouter.get("/users/:username/routines", (req, res) => {
- 
- const routines =  getPublicRoutinesByUser({id});
+  // Remember to await your DB requests
+  const routines = getPublicRoutinesByUser({
+    id,
+  });
   res.send(routines, "Get a list of public routines for a particular user.");
 });
 
