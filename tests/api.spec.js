@@ -13,7 +13,7 @@ const { JWT_SECRET = 'neverTell' } = process.env;
 
 const { rebuildDB } = require('../db/seedData');
 const { getUserById, createActivity, getPublicRoutinesByUser, getPublicRoutinesByActivity, getAllPublicRoutines, getRoutineById, createRoutine, getRoutineActivityById } = require('../db');
-const client = require('../db/client')
+const { client } = require('../db/client')
 
 describe('API', () => {
   let token, registeredUser;
@@ -33,7 +33,7 @@ describe('API', () => {
   describe('Users', () => {
     let newUser = { username: 'robert', password: 'bobbylong321' };
     let newUserShortPassword = { username: 'robertShort', password: 'bobby21' };
-    describe('POST /users/register', () => {
+    describe.only('POST /users/register', () => {
       let tooShortSuccess, tooShortResponse;
       beforeAll(async() => {
         const successResponse = await axios.post(`${API_URL}/api/users/register`, newUser);

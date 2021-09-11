@@ -1,30 +1,28 @@
 // create the express server here
-var app = require("express");
-var cors = require("cors");
-const morgan = require("morgan");
-const apiRouter = require("./api");
-const { client } = require("./db");
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const apiRouter = require('./api');
+const { client } = require('./db');
+const bodyParser = require('body-parser');
+
+
 
 const PORT = 3000;
 
-var app = express();
-
+const app = express();
+app.use(bodyParser.json());
 app.use(cors());
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
-app.use("/api", apiRouter);
+app.use('/api', apiRouter);
 
-// TODO: Delete this if it's not doing anything
-app.get("/products/:id", function (req, res, next) {
-  res.json({ msg: "This is CORS-enabled for all origins!" });
-});
-
-app.listen(PORT, function () {
+app.listen(PORT, () => {
   try {
     client.connect();
-    console.log("connected to db");
+    console.log('connected to db');
   } catch (error) {
     console.error(error);
   }
-  console.log("The server is up on port", PORT);
+  console.log('The server is up on port', PORT);
 });

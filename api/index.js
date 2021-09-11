@@ -1,4 +1,8 @@
 // create an api router
+
+// npm run start:dev
+
+// npm run test:watch api
 const express = require('express');
 
 const apiRouter = express.Router();
@@ -7,7 +11,7 @@ const apiRouter = express.Router();
 // GET /health
 
 apiRouter.get('/health', (req, res) => {
-  res.send('All is well.');
+  res.send({message: 'All is well'});
 });
 
 // attach other routers from files in this api directory (users, activities...)

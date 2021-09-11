@@ -9,12 +9,18 @@ const activitiesRouter = express.Router();
 const { createActivity, getAllActivities, updateActivity } = require('../db');
 
 // GET /activities
-activitiesRouter.get('/', async (req, res) => {
-  console.log('in all activities route');
+activitiesRouter.get('/', async (req, res, next) => {
+ try { console.log('in all activities route');
   const activities = await getAllActivities();
   // Just return a list of all activities in the database
   console.log('fetched activities: ', activities);
   res.send(activities);
+}
+catch(error) {
+  next(error);
+
+}
+
 });
 
 // POST /activities (*)
@@ -34,7 +40,7 @@ activitiesRouter.post('/', async (req, res) => {
 
 activitiesRouter.patch('/:activityId', async (req, res) => {
   // Await and execute this
-  const activities = await updateActivity;
+  const activities = await updateActivity();
   // Anyone can update an activity
   res.send(activities, 'Update Activity (Anyone)');
 });
