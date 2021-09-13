@@ -8,6 +8,7 @@ const { addActivityToRoutine, destroyRoutineActivity } = require('../db');
 
 // PATCH /routineActivities/:routineActivityId (**)
 routineActivitiesRouter.patch('/:routineActivityId', async (req, res) => {
+  const { routineActivityId } = req.params;
   const {
     routineId, activityId, count, duration,
   } = req.body;
@@ -16,17 +17,18 @@ routineActivitiesRouter.patch('/:routineActivityId', async (req, res) => {
     activityId,
     count,
     duration,
+    routineActivityId,
   );
   // Update the count or duration on the routine activity
   res.send(
     routineActivities,
-    'Update the count or duration on the routine activity',
   );
 });
 
 // DELETE /routineActivities/:routineActivityId (**)
 routineActivitiesRouter.delete('/:routineActivityId', async (req, res) => {
-  const deleteRoutineActivity = await destroyRoutineActivity();
+  const { routineActivityId } = req.params;
+  const deleteRoutineActivity = await destroyRoutineActivity(routineActivityId);
   //  Remove an activity from a routine, use hard delete
   res.send(deleteRoutineActivity);
 });

@@ -11,7 +11,7 @@ const apiRouter = express.Router();
 // GET /health
 
 apiRouter.get('/health', (req, res) => {
-  res.send({message: 'All is well'});
+  res.send({ message: 'All is well' });
 });
 
 // attach other routers from files in this api directory (users, activities...)

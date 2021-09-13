@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 
 const usersRouter = express.Router();
 
@@ -6,17 +6,17 @@ const {
   createUser,
   getUserByUsername,
   getPublicRoutinesByUser,
-} = require("../db");
+} = require('../db');
 
 // users
 // POST /users/register
 
-usersRouter.post("/register", async (req, res, next) => {
+usersRouter.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
   if (password.length < 8) {
     const passwordError = new Error({
-      name: "PasswordTooShortError",
-      message: "Password must be at least 8 characters",
+      name: 'PasswordTooShortError',
+      message: 'Password must be at least 8 characters',
     });
     next(passwordError);
   }
@@ -26,8 +26,8 @@ usersRouter.post("/register", async (req, res, next) => {
 
     if (_user) {
       next({
-        name: "UserExistsError",
-        message: "A user by that username already exists",
+        name: 'UserExistsError',
+        message: 'A user by that username already exists',
       });
     }
     const user = await createUser({
@@ -35,7 +35,7 @@ usersRouter.post("/register", async (req, res, next) => {
       password,
     });
     res.send({
-      message: "thank you for signing up",
+      message: 'thank you for signing up',
       user,
       // token,
     });
@@ -46,15 +46,15 @@ usersRouter.post("/register", async (req, res, next) => {
 
 // POST /users/login
 
-usersRouter.post("/login", async (req, res, next) => {
-  // const { username, password } = req.body;
-  res.send("login");
-  //   if (!username || !password) {
-  //     next({
-  //       name: 'MissingCredentialsError',
-  //       message: 'Please supply both a username and password',
-  //     });
-  //   }
+usersRouter.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
+  res.send('login');
+  if (!username || !password) {
+    next({
+      name: 'MissingCredentialsError',
+      message: 'Please supply both a username and password',
+    });
+  }
 
   //   try {
   //     const user = await getUserByUsername(username);
@@ -78,22 +78,20 @@ usersRouter.post("/login", async (req, res, next) => {
 
 // GET /users/me (*)
 
-usersRouter.get("/me", (req, res) => {
+usersRouter.get('/me', (req, res) => {
   res.send(
-    "Send back the logged-in user's data if a valid token is supplied in the header."
+    "Send back the logged-in user's data if a valid token is supplied in the header.",
   );
   // getUser or getUserByUsername???
 });
 
 // GET /users/:username/routines
 
-usersRouter.get("/:username/routines", async (req, res) => {
+usersRouter.get('/:username/routines', async (req, res) => {
+  const { username } = req.params;
   // Remember to await your DB requests
-  const routines = await getPublicRoutinesByUser({
-    // id,
-  });
+  const routines = await getPublicRoutinesByUser(username);
   // "Get a list of public routines for a particular user."
   res.send(routines);
 });
-
 module.exports = usersRouter;

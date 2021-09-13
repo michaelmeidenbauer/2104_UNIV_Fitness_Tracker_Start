@@ -1,12 +1,11 @@
+/* eslint-disable no-console */
 // create the express server here
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 const apiRouter = require('./api');
 const { client } = require('./db');
-const bodyParser = require('body-parser');
-
-
 
 const PORT = 3000;
 

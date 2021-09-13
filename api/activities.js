@@ -10,17 +10,15 @@ const { createActivity, getAllActivities, updateActivity } = require('../db');
 
 // GET /activities
 activitiesRouter.get('/', async (req, res, next) => {
- try { console.log('in all activities route');
-  const activities = await getAllActivities();
-  // Just return a list of all activities in the database
-  console.log('fetched activities: ', activities);
-  res.send(activities);
-}
-catch(error) {
-  next(error);
-
-}
-
+  try {
+    console.log('in all activities route');
+    const activities = await getAllActivities();
+    // Just return a list of all activities in the database
+    console.log('fetched activities: ', activities);
+    res.send(activities);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // POST /activities (*)
@@ -33,24 +31,28 @@ activitiesRouter.post('/', async (req, res) => {
     description,
   });
   // Create a new activity
-  res.send(activities, 'Return All Activites Here');
+  res.send(activities);
 });
 
 // PATCH /activities/:activityId (*)
 
 activitiesRouter.patch('/:activityId', async (req, res) => {
+  const { activityId } = req.params;
   // Await and execute this
-  const activities = await updateActivity();
+  const activities = await updateActivity(activityId);
   // Anyone can update an activity
-  res.send(activities, 'Update Activity (Anyone)');
+  res.send(activities);
 });
 
 // GET /activities/:activityId/routines
 
 activitiesRouter.get('/:activityId/routines', async (req, res) => {
   // const publicRoutines = getAllPublicRoutines;
+  const { activityId } = req.params;
+  // Await and execute this
+  const routines = await updateActivity(activityId);
   // Get a list of all public routines which feature that activity
-  res.send('Return all public routines here');
+  res.send(routines);
 });
 
 module.exports = activitiesRouter;
