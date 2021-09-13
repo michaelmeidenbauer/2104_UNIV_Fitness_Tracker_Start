@@ -168,7 +168,7 @@ describe('API', () => {
       });
     });
   });
-  describe('Routines', () => {
+  describe.only('Routines', () => {
     let routineToCreateAndUpdate = { isPublic: true, name: 'Elliptical Day', goal: 'Work on that Elliptical!' };
     const routineToFail = { isPublic: false, name: 'Elliptical Day 2', goal: 'Work on that Elliptical... again!' };
     const newRoutineData = { isPublic: false, name: 'Elliptical Day Private', goal: 'Work on that Elliptical, yet again!' };

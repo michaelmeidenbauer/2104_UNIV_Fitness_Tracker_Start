@@ -31,7 +31,7 @@ activitiesRouter.post('/', async (req, res) => {
     description,
   });
   // Create a new activity
-  res.send(activities);
+  res.send({ activities });
 });
 
 // PATCH /activities/:activityId (*)
@@ -41,7 +41,7 @@ activitiesRouter.patch('/:activityId', async (req, res) => {
   // Await and execute this
   const activities = await updateActivity(activityId);
   // Anyone can update an activity
-  res.send(activities);
+  res.send({ activities });
 });
 
 // GET /activities/:activityId/routines
@@ -52,7 +52,7 @@ activitiesRouter.get('/:activityId/routines', async (req, res) => {
   // Await and execute this
   const routines = await updateActivity(activityId);
   // Get a list of all public routines which feature that activity
-  res.send(routines);
+  res.send({ routines });
 });
 
 module.exports = activitiesRouter;
