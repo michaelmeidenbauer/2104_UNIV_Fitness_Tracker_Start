@@ -144,7 +144,8 @@ describe('API', () => {
     });
     describe('POST /activities (*)', () => {
       it('Creates a new activity', async () => {
-        const { data: respondedActivity } = await axios.post(`${API_URL}/api/activities`, activityToCreateAndUpdate, { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await axios.post(`${API_URL}/api/activities`, activityToCreateAndUpdate, { headers: { Authorization: `Bearer ${token}` } });
+        console.log('responded activity: ', data, 'activity to create and update: ', activityToCreateAndUpdate);
         expect(respondedActivity.name).toEqual(activityToCreateAndUpdate.name);
         expect(respondedActivity.description).toEqual(activityToCreateAndUpdate.description);
         activityToCreateAndUpdate = respondedActivity;
@@ -168,7 +169,7 @@ describe('API', () => {
       });
     });
   });
-  describe.only('Routines', () => {
+  describe('Routines', () => {
     let routineToCreateAndUpdate = { isPublic: true, name: 'Elliptical Day', goal: 'Work on that Elliptical!' };
     const routineToFail = { isPublic: false, name: 'Elliptical Day 2', goal: 'Work on that Elliptical... again!' };
     const newRoutineData = { isPublic: false, name: 'Elliptical Day Private', goal: 'Work on that Elliptical, yet again!' };

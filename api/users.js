@@ -46,14 +46,18 @@ usersRouter.post('/register', async (req, res, next) => {
 
 // POST /users/login
 
-usersRouter.post('/login', async (req, res, next) => {
-  const { username, password } = req.body;
-  res.send('login');
-  if (!username || !password) {
-    next({
-      name: 'MissingCredentialsError',
-      message: 'Please supply both a username and password',
-    });
+usersRouter.post('/login', (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    res.send('login');
+    if (!username || !password) {
+      next({
+        name: 'MissingCredentialsError',
+        message: 'Please supply both a username and password',
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 
   //   try {
@@ -78,20 +82,28 @@ usersRouter.post('/login', async (req, res, next) => {
 
 // GET /users/me (*)
 
-usersRouter.get('/me', (req, res) => {
-  res.send(
-    "Send back the logged-in user's data if a valid token is supplied in the header.",
-  );
+usersRouter.get('/me', (req, res, next) => {
+  try {
+    res.send(
+      "Send back the logged-in user's data if a valid token is supplied in the header.",
+    );
+  } catch (error) {
+    next(error);
+  }
   // getUser or getUserByUsername???
 });
 
 // GET /users/:username/routines
 
-usersRouter.get('/:username/routines', async (req, res) => {
-  const { username } = req.params;
-  // Remember to await your DB requests
-  const routines = await getPublicRoutinesByUser(username);
-  // "Get a list of public routines for a particular user."
-  res.send(routines);
+usersRouter.get('/:username/routines', async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    // Remember to await your DB requests
+    const routines = await getPublicRoutinesByUser(username);
+    // "Get a list of public routines for a particular user."
+    res.send(routines);
+  } catch (error) {
+    next(error);
+  }
 });
 module.exports = usersRouter;

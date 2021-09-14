@@ -20,8 +20,8 @@ app.listen(PORT, () => {
   try {
     client.connect();
     console.log('connected to db');
+    console.log('The server is up on port', PORT);
   } catch (error) {
     console.error(error);
   }
-  console.log('The server is up on port', PORT);
 });

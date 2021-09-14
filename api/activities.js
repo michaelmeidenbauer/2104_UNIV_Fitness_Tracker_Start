@@ -24,35 +24,47 @@ activitiesRouter.get('/', async (req, res, next) => {
 // POST /activities (*)
 
 activitiesRouter.post('/', async (req, res) => {
-  const { name, description } = req.body;
-  // TODO: Make sure you're defining variables before they're used
-  const activities = await createActivity({
-    name,
-    description,
-  });
-  // Create a new activity
-  res.send({ activities });
+  try {
+    const { name, description } = req.body;
+    // TODO: Make sure you're defining variables before they're used
+    const activities = await createActivity({
+      name,
+      description,
+    });
+    // Create a new activity
+    res.send({ activities });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // PATCH /activities/:activityId (*)
 
-activitiesRouter.patch('/:activityId', async (req, res) => {
-  const { activityId } = req.params;
-  // Await and execute this
-  const activities = await updateActivity(activityId);
-  // Anyone can update an activity
-  res.send({ activities });
+activitiesRouter.patch('/:activityId', async (req, res, next) => {
+  try {
+    const { activityId } = req.params;
+    // Await and execute this
+    const activities = await updateActivity(activityId);
+    // Anyone can update an activity
+    res.send({ activities });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // GET /activities/:activityId/routines
 
-activitiesRouter.get('/:activityId/routines', async (req, res) => {
-  // const publicRoutines = getAllPublicRoutines;
-  const { activityId } = req.params;
-  // Await and execute this
-  const routines = await updateActivity(activityId);
-  // Get a list of all public routines which feature that activity
-  res.send({ routines });
+activitiesRouter.get('/:activityId/routines', async (req, res, next) => {
+  try {
+    // const publicRoutines = getAllPublicRoutines;
+    const { activityId } = req.params;
+    // Await and execute this
+    const routines = await updateActivity(activityId);
+    // Get a list of all public routines which feature that activity
+    res.send({ routines });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = activitiesRouter;

@@ -31,9 +31,8 @@ const routineActivitiesRouter = require('./routine_activities');
 
 apiRouter.use('/routine_activities', routineActivitiesRouter);
 
-apiRouter.use((error, req, res, next) => {
-  res.send(error);
-  next();
+apiRouter.use((error, req, res) => {
+  res.send('You hit an error, dingus! The error: ', error);
 });
 // export the api router
 module.exports = apiRouter;
