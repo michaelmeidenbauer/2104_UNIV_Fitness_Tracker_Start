@@ -39,8 +39,9 @@ usersRouter.post('/register', async (req, res, next) => {
       user,
       // token,
     });
-  } catch ({ name, message }) {
-    next({ name, message });
+  } catch (error) {
+    console.log('error in user register post route: ', error);
+    next(error);
   }
 });
 
@@ -57,6 +58,7 @@ usersRouter.post('/login', (req, res, next) => {
       });
     }
   } catch (error) {
+    console.log('error in user login post route: ', error);
     next(error);
   }
 
@@ -88,6 +90,7 @@ usersRouter.get('/me', (req, res, next) => {
       "Send back the logged-in user's data if a valid token is supplied in the header.",
     );
   } catch (error) {
+    console.log('error in get me route');
     next(error);
   }
   // getUser or getUserByUsername???
@@ -103,6 +106,7 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
     // "Get a list of public routines for a particular user."
     res.send(routines);
   } catch (error) {
+    console.log('error in get username/:routines route: ', error);
     next(error);
   }
 });

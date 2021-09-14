@@ -25,6 +25,7 @@ routineActivitiesRouter.patch('/:routineActivityId', async (req, res, next) => {
       routineActivities,
     );
   } catch (error) {
+    console.log('error in patch routineActivities route: ', error);
     next(error);
   }
 });
@@ -37,6 +38,7 @@ routineActivitiesRouter.delete('/:routineActivityId', async (req, res, next) => 
     //  Remove an activity from a routine, use hard delete
     res.send(deleteRoutineActivity);
   } catch (error) {
+    console.log('error in delete routineActivities route: ', error);
     next(error);
   }
 });

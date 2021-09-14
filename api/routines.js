@@ -23,6 +23,7 @@ routinesRouter.get('/', async (req, res, next) => {
 
     res.send({ routine });
   } catch (error) {
+    console.log('error in get routines route: ', error);
     next(error);
   }
 });
@@ -35,6 +36,7 @@ routinesRouter.post('/', async (req, res, next) => {
     // Create a new routine
     res.send({ routines });
   } catch (error) {
+    console.log('error in post routines route: ', error);
     next(error);
   }
 });
@@ -47,21 +49,20 @@ routinesRouter.patch('/:routineId', async (req, res, next) => {
     const { routineId } = req.params;
     const routineData = {};
 
-    try {
-      routineData.id = req.params.routineId;
-      const routine = await updateRoutine(routineToUpdate, routineId);
-      // TODO: Make sure the variables for this are coming from somewhere / set in this function
+    routineData.id = req.params.routineId;
+    const routine = await updateRoutine(routineToUpdate, routineId);
+    // TODO: Make sure the variables for this are coming from somewhere / set in this function
 
-      // Return a list of public routines, include the activities with them
+    // Return a list of public routines, include the activities with them
 
-      res.send({ routine });
-    } catch { (console.log({})); }
+    res.send({ routine });
 
     //     => req.params.routineId => id of the routine you're looking to update
 
     // Tim: figure out what to do with routineToUpdate
     //  Update a routine, notably change public/private, the name, or the goal
   } catch (error) {
+    console.log('error in get routines patch: ', error);
     next(error);
   }
 });
@@ -79,6 +80,7 @@ routinesRouter.delete('/:routineId', async (req, res, next) => {
     // the routineActivities whose routine is the one being deleted.
     res.send({ deleteRoutine });
   } catch (error) {
+    console.log('error in delete routines route: ', error);
     next(error);
   }
 });
@@ -93,6 +95,7 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
     // Attach a single activity to a routine. Prevent duplication on (routineId, activityId) pair.
     res.send({ routine });
   } catch (error) {
+    console.log('error in post /:routineId/activities route: ', error);
     next(error);
   }
 });

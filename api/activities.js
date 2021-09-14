@@ -17,13 +17,14 @@ activitiesRouter.get('/', async (req, res, next) => {
     console.log('fetched activities: ', activities);
     res.send(activities);
   } catch (error) {
+    console.log('error in get activities route: ', error);
     next(error);
   }
 });
 
 // POST /activities (*)
 
-activitiesRouter.post('/', async (req, res) => {
+activitiesRouter.post('/', async (req, res, next) => {
   try {
     const { name, description } = req.body;
     // TODO: Make sure you're defining variables before they're used
@@ -34,6 +35,7 @@ activitiesRouter.post('/', async (req, res) => {
     // Create a new activity
     res.send({ activities });
   } catch (error) {
+    console.log('error in post activities route: ', error);
     next(error);
   }
 });
@@ -48,6 +50,7 @@ activitiesRouter.patch('/:activityId', async (req, res, next) => {
     // Anyone can update an activity
     res.send({ activities });
   } catch (error) {
+    console.log('error in patch activities route: ', error);
     next(error);
   }
 });
@@ -63,6 +66,7 @@ activitiesRouter.get('/:activityId/routines', async (req, res, next) => {
     // Get a list of all public routines which feature that activity
     res.send({ routines });
   } catch (error) {
+    console.log('error in get /:activityId/routines route: ', error);
     next(error);
   }
 });
