@@ -45,7 +45,7 @@ usersRouter.post('/register', async (req, res, next) => {
 });
 
 // POST /users/login
-
+// REMEMBER TO MAKE ME ASYNC AGAIN WHEN YOU CALL A DB METHOD INSIDE OF ME
 usersRouter.post('/login', (req, res, next) => {
   try {
     const { username, password } = req.body;
