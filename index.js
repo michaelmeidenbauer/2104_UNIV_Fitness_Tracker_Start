@@ -13,7 +13,8 @@ app.use(morgan('dev'));
 
 app.use('/api', apiRouter);
 
-app.use((error, req, res) => {
+// app.use((req = error, res, next) => {
+app.use((error, req, res, next) => {
   res.send(error);
 });
 

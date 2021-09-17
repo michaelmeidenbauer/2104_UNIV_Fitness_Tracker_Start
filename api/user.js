@@ -1,38 +1,40 @@
-const express = require('express');
-require('dotenv').config();
+const express = require("express");
 
 const userRouter = express.Router();
-require('dotenv').config();
+require("dotenv").config();
 
-const { JWT_SECRET } = process.env;
-const jwt = require('jsonwebtoken');
+const { JWT_SECRET = "default" } = process.env;
+const jwt = require("jsonwebtoken");
 const {
   createUser,
   getUser,
   getUserByUsername,
   getUserById,
-} = require('../db');
+} = require("../db");
 
-userRouter.post('/register', async (req, res, next) => {
+userRouter.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
+  console.log("======= IN REGISTER ===========");
+
   try {
     if (!username || !password) {
-      next({
-        name: 'InvalidRegisterAttemptError',
-        message: 'A username and password are both required.',
+      return next({
+        name: "InvalidRegisterAttemptError",
+        message: "A username and password are both required.",
       });
     }
     if (password.length < 8) {
-      next({
-        name: 'PasswordTooShortError',
-        message: 'Please try again with a longer password. Eight characters are required.',
+      return next({
+        name: "PasswordTooShortError",
+        message:
+          "Please try again with a longer password. Eight characters are required.",
       });
     }
     const existingUser = await getUserByUsername(username);
     if (existingUser) {
-      next({
-        name: 'UserAlreadyExistsError',
-        message: 'A user already exists by that name.',
+      return next({
+        name: "UserAlreadyExistsError",
+        message: "A user already exists by that name.",
       });
     }
 
@@ -43,28 +45,30 @@ userRouter.post('/register', async (req, res, next) => {
     next({ name, message });
   }
 });
-userRouter.post('/login', async (req, res, next) => {
+userRouter.post("/login", async (req, res, next) => {
+  console.log("======= IN LOGIN ===========");
   try {
     const { username: requestUser, password } = req.body;
     if (!requestUser || !password) {
-      next({
-        name: 'LoginRequestError',
-        message: 'Please provide a username and password.',
+      return next({
+        name: "LoginRequestError",
+        message: "Please provide a username and password.",
       });
     }
-    console.log('request deets: ', requestUser, password);
+    console.log("request deets: ", requestUser, password);
     const { id, username } = await getUser({ username: requestUser, password });
-    console.log('fetched username: ', username, 'fetched id: ', id);
+    console.log("fetched username: ", username, "fetched id: ", id);
     if (!username) {
-      next({
-        name: 'LoginFailError',
-        message: 'Login attempt failed. Please try again.',
+      return next({
+        name: "LoginFailError",
+        message: "Login attempt failed. Please try again.",
       });
     } else {
       const token = jwt.sign({ username, id }, JWT_SECRET);
-      console.log('created token: ', token);
-      res.send({
-        message: 'You are logged in.',
+      console.log("created token: ", token);
+      console.log("============= 70 SEND ===========");
+      return res.send({
+        message: "You are logged in.",
         token,
       });
     }
@@ -72,12 +76,14 @@ userRouter.post('/login', async (req, res, next) => {
     next(error);
   }
 });
-userRouter.post('/me', async (req, res, next) => {
-  try {
-    const prefix = 'Bearer ';
-    const auth = req.header('Authorization');
 
-    if (!auth) { // nothing to see here
+userRouter.post("/me", async (req, res, next) => {
+  try {
+    const prefix = "Bearer ";
+    const auth = req.header("Authorization");
+
+    if (!auth) {
+      // nothing to see here
       next();
     } else if (auth.startsWith(prefix)) {
       const token = auth.slice(prefix.length);
@@ -87,7 +93,7 @@ userRouter.post('/me', async (req, res, next) => {
 
         if (id) {
           const user = await getUserById(id);
-          console.log('user fetched in me route: ', user);
+          console.log("user fetched in me route: ", user);
           res.send({ user });
         }
       } catch ({ name, message }) {
@@ -95,7 +101,7 @@ userRouter.post('/me', async (req, res, next) => {
       }
     } else {
       next({
-        name: 'AuthorizationHeaderError',
+        name: "AuthorizationHeaderError",
         message: `Authorization token must start with ${prefix}`,
       });
     }

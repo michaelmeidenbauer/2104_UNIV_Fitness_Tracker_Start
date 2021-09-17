@@ -30,10 +30,9 @@ describe('API', () => {
   afterAll(async () => {
     await client.end();
   });
-  it('responds to a request at /api/health with a message specifying it is healthy', async () => {
+  it("responds to a request at /api/health with a message specifying it is healthy", async () => {
     const res = await axios.get(`${API_URL}/api/health`);
-
-    expect(typeof res.data.message).toEqual('string');
+    expect(typeof res.data.message).toEqual("string");
   });
 
   describe('Users', () => {
