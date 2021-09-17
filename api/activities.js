@@ -9,6 +9,7 @@ const {
   createActivity,
   getAllActivities,
   updateActivity,
+  getPublicRoutinesByActivity,
 } = require('../db');
 
 activitiesRouter.get('/', async (req, res, next) => {
@@ -47,65 +48,28 @@ activitiesRouter.post('/', async (req, res, next) => {
   }
 });
 
-// activitiesRouter.post('/login', async (req, res, next) => {
-//   try {
-//     const { username: requestUser, password } = req.body;
-//     if (!requestUser || !password) {
-//       throw new Error({
-//         name: 'LoginRequestError',
-//         message: 'Please provide a username and password.',
-//       });
-//     }
-//     // console.log('request deets: ', requestUser, password);
-//     const { id, username } = await getUser({ username: requestUser, password });
-//     // console.log('fetched username: ', username, 'fetched id: ', id);
-//     if (!username) {
-//       throw new Error({
-//         name: 'LoginFailError',
-//         message: 'Login attempt failed. Please try again.',
-//       });
-//     }
-//     const token = jwt.sign({ username, id }, JWT_SECRET);
-//     // console.log('created token: ', token);
-//     // console.log('============= 70 SEND ===========');
-//     res.send({
-//       message: 'You are logged in.',
-//       token,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+activitiesRouter.patch('/:activityId', async (req, res, next) => {
+  try {
+      //ADD REQUIRED AUTHENTICATION TO THIS
+    const { activityId: id } = req.params;
+    const activityToUpdate = req.body;
+    activityToUpdate.id = id;
+    console.log('assembled activity: ', activityToUpdate);
+    const updatedActivity = await updateActivity(activityToUpdate);
+    res.send(updatedActivity);
+  } catch (error) {
+    next(error);
+  }
+});
 
-// activitiesRouter.get('/me', async (req, res, next) => {
-//   try {
-//     const prefix = 'Bearer ';
-//     const auth = req.header('Authorization');
-//     if (!auth) {
-//       // nothing to see here
-//       return next();
-//     }
-//     if (auth.startsWith(prefix)) {
-//       try {
-//         const token = auth.slice(prefix.length);
-//         const { id } = jwt.verify(token, JWT_SECRET);
-//         console.log('id: ', id);
-//         if (id) {
-//           const user = await getUserById(id);
-//           return res.send(user);
-//         }
-//       } catch ({ name, message }) {
-//         return next({ name, message });
-//       }
-//     } else {
-//       throw new Error({
-//         name: 'AuthorizationHeaderError',
-//         message: `Authorization token must start with ${prefix}`,
-//       });
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+activitiesRouter.get('/:activityId/routines', async (req, res, next) => {
+  try {
+    const { activityId: id } = req.params;
+    const routines = await getPublicRoutinesByActivity({ id });
+    res.send(routines);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = activitiesRouter;
