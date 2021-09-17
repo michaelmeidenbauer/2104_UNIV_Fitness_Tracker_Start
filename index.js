@@ -14,6 +14,7 @@ app.use(morgan('dev'));
 app.use('/api', apiRouter);
 
 // app.use((req = error, res, next) => {
+// eslint-disable-next-line no-unused-vars
 app.use((error, req, res, next) => {
   res.send(error);
 });

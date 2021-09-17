@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 
 const { SERVER_ADDRESS = 'http://localhost:', PORT = 3000 } = process.env;
 const API_URL = process.env.API_URL || SERVER_ADDRESS + PORT;
-const JWT_SECRET = process.env;
+const { JWT_SECRET = 'default' } = process.env;
 
 const { rebuildDB } = require('../db/seedData');
 const {
@@ -85,7 +85,6 @@ describe('API', () => {
     describe('POST /users/login', () => {
       it('Logs in the user. Requires username and password, and verifies that hashed login password matches the saved hashed password.', async () => {
         const { data } = await axios.post(`${API_URL}/api/users/login`, newUser);
-        console.log('login result: ', data);
         token = data.token;
         expect(data.token).toBeTruthy();
       });
@@ -96,14 +95,15 @@ describe('API', () => {
       });
     });
     describe('GET /users/me', () => {
-      xit('sends back users data if valid token is supplied in header', async () => {
+      it('sends back users data if valid token is supplied in header', async () => {
         const { data } = await axios.get(`${API_URL}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log('fetch me result: ', data);
         expect(data.username).toBeTruthy();
         expect(data.username).toBe(registeredUser.username);
       });
-      xit('rejects requests with no valid token', async () => {
+      it('rejects requests with no valid token', async () => {
         let noTokenResp; let
           noTokenErrResp;
         try {
@@ -116,7 +116,7 @@ describe('API', () => {
       });
     });
     describe('GET /users/:username/routines', () => {
-      xit('Gets a list of public routines for a particular user.', async () => {
+      it('Gets a list of public routines for a particular user.', async () => {
         const userId = 2;
         const userWithRoutines = await getUserById(userId);
         const { data: routines } = await axios.get(`${API_URL}/api/users/${userWithRoutines.username}/routines`);
@@ -129,7 +129,7 @@ describe('API', () => {
   describe('Activities', () => {
     let activityToCreateAndUpdate = { name: 'Bicep Curls', description: 'They hurt, but you will thank you later' };
     describe('GET /activities', () => {
-      xit('Just returns a list of all activities in the database', async () => {
+      it('Just returns a list of all activities in the database', async () => {
         const curls = { name: 'curls', description: '4 sets of 15.' };
         const createdActivity = await createActivity(curls);
         const { data: activities } = await axios.get(`${API_URL}/api/activities`);
@@ -143,7 +143,7 @@ describe('API', () => {
       });
     });
     describe('POST /activities (*)', () => {
-      xit('Creates a new activity', async () => {
+      it('Creates a new activity', async () => {
         const { data: respondedActivity } = await axios.post(`${API_URL}/api/activities`, activityToCreateAndUpdate, { headers: { Authorization: `Bearer ${token}` } });
         expect(respondedActivity.name).toEqual(activityToCreateAndUpdate.name);
         expect(respondedActivity.description).toEqual(activityToCreateAndUpdate.description);
