@@ -1,16 +1,15 @@
 const express = require('express');
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const { requireUser } = require('./utils');
 
 const userRouter = express.Router();
-require('dotenv').config();
-
 const { JWT_SECRET = 'default' } = process.env;
-const jwt = require('jsonwebtoken');
 const {
   createUser,
   getUser,
   getUserByUsername,
   getUserById,
-  getAllRoutinesByUser,
   getPublicRoutinesByUser,
 } = require('../db');
 
@@ -86,32 +85,11 @@ userRouter.get('/:username/routines', async (req, res, next) => {
     next(error);
   }
 });
-userRouter.get('/me', async (req, res, next) => {
+userRouter.get('/me', requireUser, async (req, res, next) => {
   try {
-    const prefix = 'Bearer ';
-    const auth = req.header('Authorization');
-    if (!auth) {
-      // nothing to see here
-      return next();
-    }
-    if (auth.startsWith(prefix)) {
-      try {
-        const token = auth.slice(prefix.length);
-        const { id } = jwt.verify(token, JWT_SECRET);
-        console.log('id: ', id);
-        if (id) {
-          const user = await getUserById(id);
-          return res.send(user);
-        }
-      } catch ({ name, message }) {
-        return next({ name, message });
-      }
-    } else {
-      throw new Error({
-        name: 'AuthorizationHeaderError',
-        message: `Authorization token must start with ${prefix}`,
-      });
-    }
+    const { id } = req.user;
+    const user = await getUserById(id);
+    res.send(user);
   } catch (error) {
     next(error);
   }

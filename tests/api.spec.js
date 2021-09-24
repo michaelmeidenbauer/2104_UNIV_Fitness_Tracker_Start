@@ -173,7 +173,7 @@ describe('API', () => {
     const routineToFail = { isPublic: false, name: 'Elliptical Day 2', goal: 'Work on that Elliptical... again!' };
     const newRoutineData = { isPublic: false, name: 'Elliptical Day Private', goal: 'Work on that Elliptical, yet again!' };
     describe('GET /routines', () => {
-      xit('Returns a list of public routines, includes the activities with them', async () => {
+      it('Returns a list of public routines, includes the activities with them', async () => {
         const publicRoutinesFromDB = await getAllPublicRoutines();
         const { data: publicRoutinesFromAPI } = await axios.get(`${API_URL}/api/routines`);
         expect(publicRoutinesFromAPI).toEqual(publicRoutinesFromDB);
@@ -181,7 +181,7 @@ describe('API', () => {
     });
 
     describe('POST /routines (*)', () => {
-      xit('Creates a new routine, with the creatorId matching the logged in user', async () => {
+      it('Creates a new routine, with the creatorId matching the logged in user', async () => {
         const { data: respondedRoutine } = await axios.post(`${API_URL}/api/routines`, routineToCreateAndUpdate, { headers: { Authorization: `Bearer ${token}` } });
 
         expect(respondedRoutine.name).toEqual(routineToCreateAndUpdate.name);
@@ -190,7 +190,7 @@ describe('API', () => {
         expect(respondedRoutine.creatorId).toEqual(registeredUser.id);
         routineToCreateAndUpdate = respondedRoutine;
       });
-      xit('Requires logged in user', async () => {
+      it('Requires logged in user', async () => {
         let noLoggedInUserResp; let
           noLoggedInUserErrResp;
         try {
@@ -203,7 +203,7 @@ describe('API', () => {
       });
     });
     describe('PATCH /routines/:routineId (**)', () => {
-      xit('Updates a routine, notably changing public/private, the name, or the goal', async () => {
+      it('Updates a routine, notably changing public/private, the name, or the goal', async () => {
         const { data: respondedRoutine } = await axios.patch(`${API_URL}/api/routines/${routineToCreateAndUpdate.id}`, newRoutineData, { headers: { Authorization: `Bearer ${token}` } });
         expect(respondedRoutine.name).toEqual(newRoutineData.name);
         expect(respondedRoutine.goal).toEqual(newRoutineData.goal);
@@ -211,7 +211,7 @@ describe('API', () => {
       });
     });
     describe('DELETE /routines/:routineId (**)', () => {
-      xit('Hard deletes a routine. Makes sure to delete all the routineActivities whose routine is the one being deleted.', async () => {
+      it('Hard deletes a routine. Makes sure to delete all the routineActivities whose routine is the one being deleted.', async () => {
         const { data: deletedRoutine } = await axios.delete(`${API_URL}/api/routines/${routineToCreateAndUpdate.id}`, { headers: { Authorization: `Bearer ${token}` } });
         const shouldBeDeleted = await getRoutineById(deletedRoutine.id);
         expect(deletedRoutine.id).toBe(routineToCreateAndUpdate.id);
@@ -222,14 +222,14 @@ describe('API', () => {
     });
     describe('POST /routines/:routineId/activities', () => {
       let newRoutine;
-      xit('Attaches a single activity to a routine.', async () => {
+      it('Attaches a single activity to a routine.', async () => {
         newRoutine = await createRoutine({ creatorId: registeredUser.id, name: 'Pull Ups', goal: '10 pull ups' });
         const { data: respondedRoutineActivity } = await axios.post(`${API_URL}/api/routines/${newRoutine.id}/activities`, { routineId: newRoutine.id, ...routineActivityToCreateAndUpdate }, { headers: { Authorization: `Bearer ${token}` } });
         expect(respondedRoutineActivity.routineId).toBe(newRoutine.id);
         expect(respondedRoutineActivity.activityId).toBe(routineActivityToCreateAndUpdate.activityId);
         routineActivityToCreateAndUpdate = respondedRoutineActivity;
       });
-      xit('Prevents duplication on (routineId, activityId) pair.', async () => {
+      it('Prevents duplication on (routineId, activityId) pair.', async () => {
         let duplicateIds; let
           duplicateIdsResp;
         try {

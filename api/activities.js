@@ -1,10 +1,8 @@
 const express = require('express');
+require('dotenv').config();
+const { requireUser } = require('./utils');
 
 const activitiesRouter = express.Router();
-require('dotenv').config();
-
-const { JWT_SECRET = 'default' } = process.env;
-const jwt = require('jsonwebtoken');
 const {
   createActivity,
   getAllActivities,
@@ -21,40 +19,22 @@ activitiesRouter.get('/', async (req, res, next) => {
   }
 });
 
-activitiesRouter.post('/', async (req, res, next) => {
-  const prefix = 'Bearer ';
-  const auth = req.header('Authorization');
-  const activityToCreate = req.body;
-  if (!auth) {
-    // nothing to see here
-    return next();
-  }
-  if (auth.startsWith(prefix)) {
-    try {
-      const token = auth.slice(prefix.length);
-      const { username } = jwt.verify(token, JWT_SECRET);
-      if (username) {
-        const activity = await createActivity(activityToCreate);
-        return res.send(activity);
-      }
-    } catch ({ name, message }) {
-      return next({ name, message });
-    }
-  } else {
-    throw new Error({
-      name: 'AuthorizationHeaderError',
-      message: `Authorization token must start with ${prefix}`,
-    });
+activitiesRouter.post('/', requireUser, async (req, res, next) => {
+  try {
+    const activityToCreate = req.body;
+    const activity = await createActivity(activityToCreate);
+    res.send(activity);
+  } catch (error) {
+    next(error);
   }
 });
 
 activitiesRouter.patch('/:activityId', async (req, res, next) => {
   try {
-      //ADD REQUIRED AUTHENTICATION TO THIS
+    // ADD REQUIRED AUTHENTICATION TO THIS
     const { activityId: id } = req.params;
     const activityToUpdate = req.body;
     activityToUpdate.id = id;
-    console.log('assembled activity: ', activityToUpdate);
     const updatedActivity = await updateActivity(activityToUpdate);
     res.send(updatedActivity);
   } catch (error) {
